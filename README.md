@@ -1,6 +1,6 @@
 # Airbnb-Price-Prediction-Model
 Airbnb price prediction model with kaggle dataset 
-README olabilir…
+dataset url = https://www.kaggle.com/datasets/dgomonov/new-york-city-airbnb-open-data
 
 First step
 Import database 
@@ -150,7 +150,8 @@ Metrics:
 
  **Mathematical Formula:**
 
-![image.png](attachment:febe221d-1110-4d02-bcb0-0afd6ffc0e02:image.png)
+![MSE](https://github.com/user-attachments/assets/197c101e-ca25-471f-ba7b-365a1d2891dc)
+
 
 ---
 
@@ -183,7 +184,8 @@ Metrics:
 
 **Mathematical Formula:**
 
-![image.png](attachment:a0f05b0c-959c-44d5-8ace-778c0101124a:image.png)
+![R2_Score](https://github.com/user-attachments/assets/94299d61-8d3f-4965-ba35-2bb7d5616a32)
+
 
 Where:
 
