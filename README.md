@@ -184,7 +184,8 @@ Metrics:
 
 **Mathematical Formula:**
 
-![R2_Score](https://github.com/user-attachments/assets/94299d61-8d3f-4965-ba35-2bb7d5616a32)
+![R2_Score_Small](https://github.com/user-attachments/assets/518d2bc4-8cb4-446c-8684-b75b314c704e)
+
 
 
 Where:
