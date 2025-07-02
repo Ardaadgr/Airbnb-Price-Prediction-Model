@@ -1,221 +1,86 @@
 # Airbnb-Price-Prediction-Model
 Airbnb price prediction model with kaggle dataset 
-dataset url = https://www.kaggle.com/datasets/dgomonov/new-york-city-airbnb-open-data
 
-First step
-Import database 
+This project is a regression model developed to predict nightly prices of homes listed on Airbnb in New York City, based on accommodation data. The project aims to help beginner-level users learn essential data science steps such as data cleaning, model training, and visualization.
 
-```python
-# Read database with pandas 
-df = pd.read_csv("AB_NYC_2019.csv")
-```
+Project Objective
+Work with real-world data
 
-Second Step
-Data Preprocessing 
+Understand and apply a regression model (Linear Regression)
 
-a- Clean Unnecessary Columns
+Implement data visualization and analysis techniques
 
-```python
-df = df.drop(["id", "name", "host_name", "last_review", "neighbourhood"], axis=1)
-```
+Learn model evaluation metrics (MSE, R²)
 
-**In summary:** These columns are either uninformative (`id`), too complex due to textual content (`name`, `host_name`), or too diverse to handle easily at the beginner level (`neighbourhood`). Therefore, dropping them is a reasonable step.
+Technologies and Libraries Used
+Python (3.9+)
 
-b- Clean missing data
+Pandas – data manipulation
 
-```python
-df = df.dropna()
-```
+NumPy – numerical operations
 
-Model can not train with missing (null,none) data. We can fill missing data with fillna() method but this is my first project and I choose basic way.
+Matplotlib – visualization
 
-c- Extreme Outlier Removal
+Seaborn – statistical plots
 
-```python
-df = df[”price”] > 0]
-df = df[”price”] < 500]
-```
+Scikit-learn – machine learning models
 
-Some Airbnb’s price is zero and this is technically meaningless
+Dataset
+The dataset used is available on Kaggle - Airbnb NYC 2019 Dataset.
 
-Some prices are more than 10.000$ these prices misleads the model because these values are rare but enough to manipulate training process.
+Key Columns:
+neighbourhood_group – neighborhood district
 
-d - Apply Log Transformation to Prices
+room_type – type of room (private room, entire home, etc.)
 
-```python
-df[”price”] = np.log(df[”price”])
-```
+price – nightly price
 
-The price data is highly skewed: most prices are between $100–$200, but some go well beyond $1000. This skewness can mislead the model.
+number_of_reviews, minimum_nights, etc. – explanatory variables
 
-When we apply `np.log()`, the differences between prices are compressed, allowing the model to generalize better.
+## Project Steps
 
-Example prices:
+1. **Data Loading and Cleaning**
+    - Removal of lost and meaningless values
+    - Conversion of categorical variables (One-Hot Encoding)
+    - Filtering outlier values
+2. **Feature Selection**
+    - Determination of variables affecting the model
+3. **Model Training**
+    - Forecasting using Linear Regression model
+4. **Evaluation**
+    - Mean Squared Error (MSE)
+    - R² Score (Coefficient of determination)
+5. **Visualization**
+    - Price distributions (before / after log)
+    - Prices by room type
+    - Prices by neighborhood
+    - Actual vs predicted values
+    - Correlation matrix
 
-`[50, 100, 300, 1000]`
+## Sample Output
+Mean Squared Error: 23927.28
+R² Score: 0.168
 
-After log transformation:
+Actual Price: 58.00 USD, Predict: 91.51 USD
+Actual Price: 250.00 USD, Predict: 180.98 USD
 
-`[3.91, 4.60, 5.70, 6.91]`
+## Example Charts
 
-**Advantage:** It reduces extreme gaps between price values → making learning easier for the model.
+- Actual vs Prediction Price Chart
+- Correlation Matrix
+- Log(Price) Histogram
+- Box Plot by District
 
-e- Digitization of Categorical Data (One-hot encoding)
+## What has been learned
 
-```python
-df_encoded = pd.get_dummies(df, columns =["neighbourhood_group", "room_type"], drop_first = True)
+- How to clean real world data?
+- How to build a regression model?
+- How to analyze model outputs?
+- How to interpret the result with visualization?
 
-```
+## Development Ideas
 
-ML Models only work with numerical data.
-neighbourhood_group: Manhattan,Brooklyn, etc.(text)
-room_type: Entire home, Private room, vs. (text)
-
-get_dummies() change texts like 0-1 numbers
-
-drop_first=True removes first category and prevent multicollinearity
-
-Third Step
-
-Start prepare train and test data 
-
-a- X and Y definition (Input and Target definition)
-
-```python
-y = df_encoded["price"]  
-X = df_encoded.drop("price", axis=1)  
-```
-
-To provide the model to learn:
-
-**X** → Independent variables (location, room type, number of rooms, etc.)
-
-**y** → Dependent variable (log-transformed price)
-
-b- Splitting Data Into Training and Test 
-
-```python
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(
-X, y, test_size=0.2, random_state=42
-)
-```
-
-Split the data in two pieces
-%80 Train data percentage for model (train)
-%20 Test data percentage for model (test)
-
-c- Create, Train and Test the Model
-
-```python
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
-
-model = LinearRegression()
-model.fit(X_train, y_train)
-
-y_pred = model.predict(X_test)
-
-print("Mean Squared Error:", mean_squared_error(y_test, y_pred))
-print("R2 Score:", r2_score(y_test, y_pred))
-```
-
-LinearRegression() → Most basic prediction model “Price is directli proportional to the number of rooms and location ”
-
-fit() → Training process (**The relationship between x_train and y_train is learned**)
-predict() → Apply the learning to test data
-
-Final Step 
-
-Turning Back the Predicted Data to Actual Prices
-
-```python
-actual_prices = np.exp(y_test)
-predicted_prices = np.exp(y_pred)
-for real, pred in list(zip(actual_prices, predicted_prices))[:10]:
-print(f"Gerçek: {real:.2f} USD, Tahmin: {pred:.2f} USD")
-```
-
-Why we need to do this? 
-Because we apply log transform to data. 
-If you want to see the predicted results in actual dollar values, you need to convert them back using `np.exp()`.
-
-Metrics:
-
-**1. Mean Squared Error (MSE)**
-
- *It is the average of the squares of the differences between the predicted values and the actual values.*
-
----
-
- **Mathematical Formula:**
-
-![MSE](https://github.com/user-attachments/assets/197c101e-ca25-471f-ba7b-365a1d2891dc)
-
-
----
-
- **Explanation:**
-
-- Errors are calculated as (actual − predicted).
-- Each error is squared (to eliminate negatives).
-- The squared errors are averaged → this gives the *mean squared error*.
-
----
-
-**Interpretation:**
-
-- A **lower MSE** indicates a **better-performing model**.
-- Its unit is the **square of the original unit** (e.g., dollars²), which makes it harder to interpret directly in terms of the target variable.
-
----
-
-**Advantage:**
-
-- **Penalizes large errors more heavily**, since errors are squared.
-
-2.
-
-**R² Score (Coefficient of Determination)**
-
- I*ndicates how much of the variance in the target variable is explained by the model.*
-
----
-
-**Mathematical Formula:**
-
-![R2_Score_Small](https://github.com/user-attachments/assets/518d2bc4-8cb4-446c-8684-b75b314c704e)
-
-
-
-Where:
-
-- SSres: Sum of squared residuals (model error)
-- SStot: Total variance in the data (differences from the mean)
-
----
-
-**Meaning:**
-
-- **R² = 1**: Perfect prediction (no error)
-- **R² = 0**: The model learned nothing (no better than predicting the mean)
-- **R² < 0**: The model performs worse than just predicting the average → warning sign
-
----
-
-E**xample:**
-
-- **R² = 0.80**: The model explains 80% of the variation in prices.
-- **R² = 0.20**: The model explains only 20% of the variation → weak model.
-
-**MSE** → Answers the question: *"How wrong are the predictions?"*
-
-**R²** → Answers the question: *"How well does the model explain the data?"*
-
-This setup:
-
-- Removes outliers
-- Normalizes prices using log transformation
-- Converts text data into numerical format
-- Splits data into training and test sets
-- Trains and validates the model
+- Comparison with other regression models (Random Forest, XGBoost)
+- Feature Importance analysis
+- Model optimization (GridSearchCV)
+- Interactive forecasting tool with web interface (Flask or Streamlit)
